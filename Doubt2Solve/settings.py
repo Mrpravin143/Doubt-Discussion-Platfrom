@@ -73,16 +73,18 @@ WSGI_APPLICATION = 'Doubt2Solve.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql_psycopg2',
-            'NAME': 'DoubtForYou',  
-            'USER': 'postgres',  
-            'PASSWORD': 'Pravin6670@#$',  
-            'HOST': 'localhost',  
-            'PORT': '5432',  
-        }
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'DoubtForYou',  
+        'USER': 'postgres',  
+        'PASSWORD': 'Pravin6670@#$',  
+        'HOST': 'localhost',  
+        'PORT': '5432',  
     }
+}
+
+AUTH_USER_MODEL = 'doubt.CustomUser'
 
 
 # Password validation
