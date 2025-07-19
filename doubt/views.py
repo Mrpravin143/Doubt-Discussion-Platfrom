@@ -47,7 +47,7 @@ def register_user(request):
             division=division,
             year=year
         )
-        user_obj.set_password(password)  # ✅ Corrected line
+        user_obj.set_password(password)  
         user_obj.save()
 
         messages.success(request, "Registration successful!")
