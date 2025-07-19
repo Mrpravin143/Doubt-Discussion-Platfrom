@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+{% block start %}
+    <style>
+        body {
+            background: linear-gradient(135deg, #6e8efb, #a777e3);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .login-form {
+            background: #fff;
+            padding: 35px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 450px;
+        }
+        .form-title {
+            font-weight: bold;
+            margin-bottom: 25px;
+            text-align: center;
+            color: #6e8efb;
+        }
+        .gradient-btn {
+            background: linear-gradient(45deg, #6e8efb, #a777e3);
+            color: white;
+            border: none;
+        }
+
+          .alert {
+        font-weight: 500;
+        font-size: 16px;
+        border-left: 6px solid;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        padding: 12px 20px;
+        margin-top: 10px;
+    }
+    .alert-success {
+        background: linear-gradient(to right, #d4fc79, #96e6a1);
+        border-color: #28a745;
+        color: #155724;
+    }
+    .alert-danger {
+        background: linear-gradient(to right, #ff758c, #ff7eb3);
+        border-color: #dc3545;
+        color: #721c24;
+    }
+    .alert-warning {
+        background: linear-gradient(to right, #fceabb, #f8b500);
+        border-color: #ffc107;
+        color: #856404;
+    }
+    .alert-info {
+        background: linear-gradient(to right, #a1c4fd, #c2e9fb);
+        border-color: #17a2b8;
+        color: #0c5460;
+    }
+    </style>
+
+<div class="login-form">
+    <h3 class="form-title">Login to Your Account</h3>
+
+    <!-- Django messages -->
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <form method="post">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="email" class="form-label">Email address</label>
+            <input type="email" name="login_email" class="form-control"  value="{{ request.POST.login_email }}" required>
+        </div>
+        
+        <div class="mb-3">
+            <label for="password" class="form-label">Password</label>
+            <input type="password" name="login_password" class="form-control"  placeholder="Enter password" required>
+        </div>
+
+        <div class="d-grid">
+            <button type="submit" class="btn gradient-btn">Login</button>
+        </div>
+    </form>
+
+    <div class="mt-3 text-center">
+        <small>Don't have an account? <a href="{% url 'register_user' %}">Register here</a></small>
+    </div>
+</div>
+
+
+
+
+
+{% endblock %}
