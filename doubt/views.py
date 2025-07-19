@@ -3,11 +3,6 @@ from doubt.models import CustomUser
 from django.contrib import messages
 from django.contrib.auth import authenticate,login,logout
 
-# Create your views here.
-from django.shortcuts import render, redirect
-from django.contrib import messages
-from django.contrib.auth import authenticate, login
-from doubt.models import CustomUser
 
 def register_user(request):
     if request.method == "POST":
