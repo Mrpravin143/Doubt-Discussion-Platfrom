@@ -1,81 +1,104 @@
 {% extends "base.html" %}
 {% block start %}
-    <style>
-        body {
-            background: linear-gradient(135deg, #6e8efb, #a777e3);
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        .registration-form {
-            background: #fff;
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-            width: 100%;
-            max-width: 600px;
-        }
-        .form-title {
-            font-weight: bold;
-            margin-bottom: 25px;
-        }
-        .gradient-btn {
-            background: linear-gradient(45deg, #6e8efb, #a777e3);
-            color: white;
-        }
-        /* alert box styling start from here */
-        .alert {
+<style>
+    body {
+        background: #e9f0fb;
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-family: 'Segoe UI', sans-serif;
+    }
+
+    .registration-form {
+        background: #ffffff;
+        padding: 30px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 600px;
+        border: 1px solid #cddff7;
+    }
+
+    .form-title {
+        font-weight: bold;
+        margin-bottom: 25px;
+        color: #0051a8;
+    }
+
+    .gradient-btn {
+        background: linear-gradient(45deg, #0d6efd, #002952);
+        color: white;
+        border: none;
+    }
+
+    .form-label {
+        color: #0d2a63;
+    }
+
+    /* Remove rounded corners */
+    .form-control,
+    .form-select,
+    .btn,
+    .alert,
+    .registration-form {
+        border-radius: 0 !important;
+    }
+
+    /* alert box styling */
+    .alert {
         font-weight: 500;
         font-size: 16px;
         border-left: 6px solid;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
         padding: 12px 20px;
         margin-top: 10px;
     }
+
     .alert-success {
-        background: linear-gradient(to right, #d4fc79, #96e6a1);
+        background: #e6ffed;
         border-color: #28a745;
         color: #155724;
     }
+
     .alert-danger {
-        background: linear-gradient(to right, #ff758c, #ff7eb3);
+        background: #ffe6e9;
         border-color: #dc3545;
         color: #721c24;
     }
+
     .alert-warning {
-        background: linear-gradient(to right, #fceabb, #f8b500);
+        background: #fff9e5;
         border-color: #ffc107;
         color: #856404;
     }
+
     .alert-info {
-        background: linear-gradient(to right, #a1c4fd, #c2e9fb);
+        background: #e6f2ff;
         border-color: #17a2b8;
         color: #0c5460;
     }
-    </style>
-</head>
-<body>
+</style>
 
 <div class="registration-form">
-    <h3 class="form-title">Student Registration</h3>
+    <h3 class="form-title text-center">Student Registration</h3>
     <form method="post">
         {% csrf_token %}
-   {% if messages %}
-        {% for message in messages %}
-        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-            <strong>
-                {% if message.tags == 'success' %}✅ Success:
-                {% elif message.tags == 'error' %}❌ Error:
-                {% elif message.tags == 'warning' %}⚠️ Warning:
-                {% elif message.tags == 'info' %}ℹ️ Info:
-                {% endif %}
-            </strong>
-            {{ message }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    {% endfor %}
-{% endif %}
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    <strong>
+                        {% if message.tags == 'success' %}✅ Success:
+                        {% elif message.tags == 'error' %}❌ Error:
+                        {% elif message.tags == 'warning' %}⚠️ Warning:
+                        {% elif message.tags == 'info' %}ℹ️ Info:
+                        {% endif %}
+                    </strong>
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
 
         <div class="row g-3">
             <div class="col-md-6">
@@ -96,18 +119,18 @@
                     <option value="">Select role</option>
                     <option value="student">Student</option>
                     <option value="teacher">Teacher</option>
-                    <option value="teacher">Admin</option>
+                    <option value="admin">Admin</option>
                 </select>
             </div>
             <div class="col-md-6">
                 <label class="form-label">Course</label>
                 <select name="course" class="form-select">
                     <option value="">Select course</option>
-                    <option value="bsc">BCA</option>
-                    <option value="bcom">BBA</option>
-                    <option value="ba">BMS</option>
-                    <option value="ba">I-MCA</option>
-                    <option value="ba">MCA</option>
+                    <option value="bca">BCA</option>
+                    <option value="bba">BBA</option>
+                    <option value="bms">BMS</option>
+                    <option value="imca">I-MCA</option>
+                    <option value="mca">MCA</option>
                 </select>
             </div>
             <div class="col-md-6">
@@ -129,13 +152,13 @@
                     <option value="4">Fourth Year</option>
                 </select>
             </div>
-             <div class="col-md-6">
+            <div class="col-md-6">
                 <label class="form-label">Password</label>
-                <input type="text" name="password" class="form-control" placeholder="Enter Password">
+                <input type="password" name="password" class="form-control" placeholder="Enter Password">
             </div>
-                 <div class="col-md-6">
-                <label class="form-label">Comfirm Password</label>
-                <input type="text" name="confirm_password" class="form-control" placeholder="Enter Comfirm Password">
+            <div class="col-md-6">
+                <label class="form-label">Confirm Password</label>
+                <input type="password" name="confirm_password" class="form-control" placeholder="Confirm Password">
             </div>
         </div>
 
@@ -143,9 +166,41 @@
             <button type="submit" class="btn gradient-btn px-5">Register</button>
         </div>
     </form>
-       <div class="mt-3 text-center">
-        <small>Don't have an account? <a href="{% url 'login_user' %}">Login here</a></small>
+    <div class="mt-3 text-center">
+        <small>Already have an account? <a href="{% url 'login_user' %}">Login here</a></small>
     </div>
+</div>
 
-    {% endblock %}
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const roleField = document.querySelector('select[name="role"]');
+        const courseField = document.querySelector('select[name="course"]');
+        const divisionField = document.querySelector('select[name="division"]');
+        const yearField = document.querySelector('select[name="year"]');
 
+        function toggleFields() {
+            const selectedRole = roleField.value;
+
+            const shouldDisable = selectedRole === "teacher" || selectedRole === "admin";
+
+            courseField.disabled = shouldDisable;
+            divisionField.disabled = shouldDisable;
+            yearField.disabled = shouldDisable;
+
+            // Optional: reset values if disabled
+            if (shouldDisable) {
+                courseField.value = "";
+                divisionField.value = "";
+                yearField.value = "";
+            }
+        }
+
+        // Run on page load (if role was pre-selected)
+        toggleFields();
+
+        // Run on change
+        roleField.addEventListener("change", toggleFields);
+    });
+</script>
+
+{% endblock %}

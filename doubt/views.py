@@ -17,7 +17,13 @@ def register_user(request):
         confirm_password = request.POST.get('confirm_password', '')
 
         # Validation
-        if not all([first_name, last_name, email, role, course, division, year, password, confirm_password]):
+
+        if year == "":
+            year = None
+        else:
+            year = int(year)
+
+        if not all([first_name, last_name, email, role,password, confirm_password]):
             messages.error(request, "All fields are required!")
             return redirect('/Registration/')
 
@@ -69,29 +75,56 @@ def login_user(request):
             messages.error(request, "Email and password are required.")
             return redirect('/Login_user/')
         
-        
-       
         user = authenticate(request, username=email, password=password)
-        print(user.role)
+
+
         if user is not None:
             login(request, user)
             messages.success(request, "Login successful!")
 
-        if user.role == "admin":
-            return redirect("/admin/")
+            if hasattr(user, 'role'):
+                
+                if user.role.lower() == "admin":
+                    if not user.is_superuser:
+                        user.is_staff = True
+                        user.save()
+                    
+                    return redirect('/admin/')
+                
 
-        if user.role == "Student":
-            return redirect("/Registration/")
+                elif user.role == "Student":
+                    return redirect("/Student_home/")
 
-        if user.role == "Teacher":
-            return redirect("/Registration/")
-        
-           
+                elif user.role == "Teacher":
+                    return redirect("/Student_home/")
+
+                else:
+                    messages.error(request, "Unknown user role.")
+                    return redirect('/Login_user/')
+            else:
+                messages.error(request, "User role not set.")
+                return redirect('/Login_user/')
+
         else:
             messages.error(request, "Invalid credentials!")
             return redirect('/Login_user/')
 
     return render(request, 'login.html')
+
+    
+
+
+def student_dashboard(request):
+    teacher_count = CustomUser.objects.filter(role__iexact='teacher').count()
+    student_count = CustomUser.objects.filter(role__iexact='student').count()
+    solved_answers = 120  
+
+    context = {
+        'teacher_count': teacher_count,
+        'student_count': student_count,
+        'solved_answers': solved_answers,
+    }
+    return render(request,"student_dashboard.html",context)
 
 
 
