@@ -1,278 +1,326 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Doubt Discussion Platform</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+{% extends "base.html" %}
+{% block start %}
 
   <style>
-    :root {
-      --main-blue: #0d6efd;
-      --dark-blue: #002952;
-      --gradient-blue: linear-gradient(135deg, #0d6efd, #002952);
+    html {
+      scroll-behavior: smooth;
     }
+
     body {
       font-family: 'Segoe UI', sans-serif;
-    }
-    .navbar {
-      background: var(--main-blue);
+      background-color: #f8f9fa;
     }
 
-    .hero {
-  position: relative;
-  min-height: 90vh;
-  overflow: hidden;
-  background: linear-gradient(135deg, white, violet, blue, pink);
-  background-size: 400% 400%;
-  animation: gradientBG 15s ease infinite;
-}
-
-.gradient-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 100%;
-  width: 100%;
-  background-color: rgba(0, 0, 0, 0.3); /* Lower opacity */
-  z-index: 1;
-}
-
-.hero .container.content {
-  z-index: 2;
-}
-
-@keyframes gradientBG {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-
-.hero h1,
-.hero h2,
-.hero p {
-  color: #fff;
-  text-shadow: 1px 1px 5px rgba(0,0,0,0.3);
-}
-    .zigzag {
-      background: var(--gradient-blue);
-      clip-path: polygon(0 0, 100% 0, 100% 90%, 0% 100%);
+    .sticky-topbar {
+      position: sticky;
+      top: 0;
+      z-index: 1050;
+      background-color: #0000FF;
       color: white;
     }
-    .zigzag-down {
-      clip-path: polygon(0 10%, 100% 0, 100% 100%, 0 100%);
-    }
-    .team-img, .coordinator-img {
-      border-radius: 0.5rem;
-      width: 100%;
-    }
-    .section-title {
-      font-weight: bold;
-      color: var(--main-blue);
-    }
-    .review-card {
-      background-color: #f5faff;
-      border-left: 5px solid var(--main-blue);
-    }
-    .animated-btn {
-      animation: pulse 1.5s infinite;
-    }
-    @keyframes pulse {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.05); }
-      100% { transform: scale(1); }
-    }
-    /* statistic section style */
-    .card:hover {
-        transform: scale(1.02);
-        transition: 0.3s ease-in-out;
-        }
 
+    .question-tags span {
+      background-color: #e0e7ff;
+      color: #0000FF;
+      font-size: 0.8rem;
+      padding: 4px 10px;
+      margin-right: 5px;
+      border-radius: 5px;
+    }
+
+    .footer {
+      background-color: #0000FF;
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .search-icon {
+      position: absolute;
+      top: 50%;
+      left: 10px;
+      transform: translateY(-50%);
+      color: gray;
+    }
+
+    .search-input {
+      padding-left: 2.5rem;
+    }
+
+    .hover-scale {
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .hover-scale:hover {
+      transform: scale(1.03);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    }
+
+    #coordinator h5 {
+      font-size: 1.25rem;
+      color: #333;
+    }
+
+    #coordinator p {
+      font-size: 1rem;
+      color: #777;
+    }
+
+    .team-card {
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .team-card:hover {
+      transform: scale(1.03);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .animate-card {
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeSlideUp 0.6s ease forwards;
+    }
+
+    .animate-card:nth-child(1) { animation-delay: 0.1s; }
+    .animate-card:nth-child(2) { animation-delay: 0.2s; }
+    .animate-card:nth-child(3) { animation-delay: 0.3s; }
+    .animate-card:nth-child(4) { animation-delay: 0.4s; }
+
+    @keyframes fadeSlideUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Hero Section */
+    #hero {
+      background: linear-gradient(120deg, #0000FF, #0055FF);
+      color: white;
+    }
+
+    @media (max-width: 768px) {
+      .navbar-brand span {
+        font-size: 1.1rem;
+      }
+
+      .card-title {
+        font-size: 1rem;
+      }
+
+      .card-text,
+      .question-tags span {
+        font-size: 0.85rem;
+      }
+
+      #hero h1 {
+        font-size: 2rem;
+      }
+
+      #hero p {
+        font-size: 1rem;
+      }
+    }
   </style>
 </head>
 <body>
+
   <!-- Navbar -->
-  <nav class="navbar navbar-expand-lg navbar-dark">
-  <div class="container">
-    <a class="navbar-brand" href="#">Doubt Platform</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-      <span class="navbar-toggler-icon"></span>
-    </button>
+  <nav class="navbar navbar-expand-lg sticky-topbar py-2">
+    <div class="container-fluid px-4">
+      <a class="navbar-brand d-flex align-items-center text-white" href="#">
+        <span class="fw-bold fs-5">Doubt<span class="text-warning">2</span>Solve</span>
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
+        <span class="navbar-toggler-icon"></span>
+      </button>
 
-    <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav ms-auto">
-        <li class="nav-item"><a class="nav-link" href="#doubts">Doubts</a></li>
-        <li class="nav-item"><a class="nav-link" href="#reviews">Reviews</a></li>
-        <li class="nav-item"><a class="nav-link" href="#team">Team</a></li>
-        <li class="nav-item"><a class="nav-link" href="#coordinator">Coordinator</a></li>
+      <div class="collapse navbar-collapse" id="navbarContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item"><a class="nav-link text-white" href="#hero">Home</a></li>
+          <li class="nav-item"><a class="nav-link text-white" href="#counter">Counter</a></li>
+          <li class="nav-item"><a class="nav-link text-white" href="#team">Team</a></li>
+          <li class="nav-item"><a class="nav-link text-white" href="#coordinator">Coordinators</a></li>
+          <li class="nav-item"><a class="nav-link text-white" href="#features">Features</a></li>
+        </ul>
+        <form class="d-flex position-relative me-3" role="search">
+          <span class="search-icon">
+            <i class="fas fa-search"></i>
+          </span>
+          <input class="form-control search-input" type="search" placeholder="Search..." aria-label="Search">
+        </form>
+        <span>
+        <a class="btn btn-light" data-bs-toggle="" data-bs-target="" href="{% if user.is_authenticated %}{% else %}{% url 'login_user' %}{% endif %}">{% if user.is_authenticated %}{{user.email}}{% else %}Ask Doubts{% endif %}</a>
 
-        {% if user.is_authenticated %}
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-              {{ user.username }}
-            </a>
-            <ul class="dropdown-menu dropdown-menu-end">
-              <li><a class="dropdown-item" href="/profile">My Profile</a></li>
-              <li><a class="dropdown-item" href="/logout">Logout</a></li>
-            </ul>
-          </li>
-        {% else %}
-          <li class="nav-item">
-            <a class="btn btn-light btn-sm ms-2" href="/login">Login</a>
-          </li>
-        {% endif %}
-      </ul>
+        <a class="btn btn-light" data-bs-toggle="" data-bs-target="" href="{% if user.is_authenticated %}{% url 'user_logout' %}{% endif %}">{% if user.is_authenticated %}Logout{% else %}🤗{% endif %}</a>
+        </span>
+      </div>
     </div>
-  </div>
-</nav>
-
+  </nav>
 
   <!-- Hero Section -->
-  <section class="hero d-flex align-items-center text-center text-white">
-  <div class="gradient-overlay"></div>
-  <div class="container content position-relative">
-    <h1 class="display-4 fw-bold">Probably the Best</h1>
-    <h2 class="fw-light">Creative Doubt Solving Space</h2>
-    <p class="lead mt-3">Where questions meet their answers.</p>
-    <a href="/ask" class="btn btn-light btn-lg mt-3 fw-bold">Ask a Doubt</a>
-  </div>
-</section>
-
-  <!-- Recent Doubts Section -->
-  <section id="doubts" class="py-5">
+  <section class="py-5 text-white text-center" id="hero">
     <div class="container">
-      <h2 class="section-title text-center mb-5">Recent Doubts</h2>
-      <div class="row">
-        {% for doubt in doubts %}
-        <div class="col-md-4 mb-4">
-          <div class="card h-100">
-            <div class="card-body">
-              <h5 class="card-title">{{ doubt.title }}</h5>
-              <p class="card-text">{{ doubt.description|truncatechars:100 }}</p>
-              <a href="/doubt/{{ doubt.id }}" class="btn btn-outline-primary btn-sm">View Answers</a>
-            </div>
-          </div>
+      <h1 class="display-5 fw-bold mb-3" data-aos="fade-down">Welcome to <span class="text-warning">Doubt2Solve</span></h1>
+      <p class="lead mb-4" data-aos="fade-up">Get your academic doubts solved quickly and efficiently by experts and peers.</p>
+      <a href="#recent-doubts" class="btn btn-light btn-lg" data-aos="zoom-in">Browse Doubts</a>
+      <a href="{% if user.is_authenticated  %}{% url 'ask_doubts' %} {% else %}{% url 'login_user' %}{% endif%}"  class="btn btn-outline-light btn-lg ms-3" data-aos="zoom-in">Ask a Doubt</a>
+    </div>
+  </section>
+
+  <!-- Newest Doubts -->
+  <div class="main-content container py-5">
+    <h3 class="mb-4 fw-bold text-primary" data-aos="fade-right">🚀 Newest Doubts</h3>
+
+    {% for doubt in doubts %}
+    <div class="card mb-4 shadow-lg border-0 rounded-4 bg-light doubt-card" data-aos="fade-up" data-aos-delay="{{ forloop.counter0|add:1 }}00">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <h5 class="card-title text-dark fw-semibold">{{ doubt.decrypted_name }}</h5>
+          <small class="text-muted fst-italic"><i class="bi bi-clock"></i> {{ doubt.created_at|timesince }} ago</small>
         </div>
+        
+        <p class="text-muted mb-3">{{ doubt.decrypted_description|truncatewords:20 }}</p>
+        <span><b class="text-muted mb-3">{{ doubt.teacher_select }} Sir</b> <br><i class="text-muted mb-3">Asked By : {{doubt.user}}</i></span>
+        <div class="question-tags">
+          {% for tag in doubt.tags.all %}
+          <span class="badge rounded-pill bg-info text-dark me-1">{{ tag.name }}</span>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+    {% empty %}
+    <div class="alert alert-info shadow-sm" data-aos="fade-up">
+      <i class="bi bi-info-circle"></i> No doubts available.
+    </div>
+    {% endfor %}
+  </div>
+
+  <!-- Recent Doubts -->
+  <main class="container py-4" id="recent-doubts">
+    <h4 class="fw-bold text-primary mb-3" data-aos="fade-right">🎯 Recent Doubts</h4>
+    <div class="scroll-container mb-3">
+      <div class="scroll-track scroll-left">
+        {% for doubt in doubts %}
+        <span class="badge bg-primary text-white me-3">{{ doubt.question }}</span>
         {% endfor %}
       </div>
     </div>
+    <div class="scroll-container">
+      <div class="scroll-track scroll-right">
+        {% for doubt in doubts %}
+        <span class="badge bg-dark text-white me-3">{{ doubt.question }}</span>
+        {% endfor %}
+      </div>
+    </div>
+  </main>
+
+  <!-- Counter Section -->
+  <section id="counter" class="py-5 bg-light">
+    <div class="container">
+      <div class="row text-center">
+        <div class="col-md-4 mb-4">
+          <div class="card shadow-sm p-4 border-0 rounded-4 h-100">
+            <h2 class="text-primary fw-bold counter-value" data-target="{{ student_count }}">0</h2>
+            <p class="text-muted mb-0">👨‍🎓 Students Registered</p>
+          </div>
+        </div>
+        <div class="col-md-4 mb-4">
+          <div class="card shadow-sm p-4 border-0 rounded-4 h-100">
+            <h2 class="text-success fw-bold counter-value" data-target="{{ teacher_count }}">0</h2>
+            <p class="text-muted mb-0">👩‍🏫 Teachers Registered</p>
+          </div>
+        </div>
+        <div class="col-md-4 mb-4">
+          <div class="card shadow-sm p-4 border-0 rounded-4 h-100">
+            <h2 class="text-danger fw-bold counter-value" data-target="{{ solved_count }}">0</h2>
+            <p class="text-muted mb-0">✅ Problems Solved</p>
+          </div>
+        </div>
+      </div>
+    </div>
   </section>
-
-  <!-- Statistics Section -->
-<section class="py-5 bg-light">
-  <div class="container my-5">
-    <div class="row g-4 justify-content-center">
-      
-      <!-- Teachers Registered -->
-      <div class="col-md-4">
-        <div class="card text-center shadow-lg border-0 p-4 bg-white rounded-4">
-          <div class="count-icon mb-3">
-            <i class="bi bi-person-badge-fill fs-1 text-primary"></i>
+<!-- coordinator -->
+  <section id="coordinator" class="py-5 bg-white text-center">
+  <div class="container">
+    <h4 class="text-center fw-bold mb-5 text-primary">Our Coordinators</h4>
+    <div class="row justify-content-center g-4">
+      {% for coordinator in coordinators %}
+      <div class="col-6 col-md-4 col-lg-3">
+        <div class="card border-0 shadow-lg h-100 rounded-4 hover-scale p-3">
+          <div class="d-flex justify-content-center">
+            <img src="{{ coordinator.image.url }}" 
+                 alt="{{ coordinator.name }}" 
+                 class="rounded-circle shadow" 
+                 style="width: 140px; height: 140px; object-fit: cover; border: 4px solid #0d6efd;">
           </div>
-          <h2 class="fw-bold text-dark">{{ teacher_count }}</h2>
-          <p class="mb-0 fw-semibold text-secondary">Teachers Registered</p>
+          <div class="card-body">
+            <h5 class="fw-bold mt-3">{{ coordinator.name }}</h5>
+            <p class="text-muted fw-semibold">{{ coordinator.role }}</p>
+          </div>
         </div>
       </div>
-
-      <!-- Students Registered -->
-      <div class="col-md-4">
-        <div class="card text-center shadow-lg border-0 p-4 bg-white rounded-4">
-          <div class="count-icon mb-3">
-            <i class="bi bi-person-circle fs-1 text-success"></i>
-          </div>
-          <h2 class="fw-bold text-dark">{{ student_count }}</h2>
-          <p class="mb-0 fw-semibold text-secondary">Students Registered</p>
-        </div>
-      </div>
-
-      <!-- Answers Solved -->
-      <div class="col-md-4">
-        <div class="card text-center shadow-lg border-0 p-4 bg-white rounded-4">
-          <div class="count-icon mb-3">
-            <i class="bi bi-check-circle-fill fs-1 text-warning"></i>
-          </div>
-          <h2 class="fw-bold text-dark">{{ solved_answers }}</h2>
-          <p class="mb-0 fw-semibold text-secondary">Answers Solved</p>
-        </div>
-      </div>
-
+      {% endfor %}
     </div>
   </div>
 </section>
 
 
-  <!-- Student Reviews -->
-  <section id="reviews" class="zigzag py-5">
-    <div class="container">
-      <h2 class="section-title text-center text-white mb-5">What Students Say</h2>
-      <div class="row">
-        <div class="col-md-4">
-          <div class="p-4 review-card">
-            <p>"Helped me understand DSA better!"</p>
-            <footer class="blockquote-footer">Anjali, TYCS</footer>
+<!-- Development Team -->
+<section id="team" class="py-5 bg-light">
+  <div class="container">
+    <h4 class="text-center fw-bold mb-5 text-success">Development Team</h4>
+    <div class="row justify-content-center g-4">
+      {% for member in team %}
+      <div class="col-6 col-md-4 col-lg-3">
+        <div class="bg-white rounded-4 shadow p-4 text-center h-100">
+          <div class="d-flex justify-content-center mb-3">
+            <img src="{{ member.image.url }}" 
+                 alt="{{ member.name }}" 
+                 class="rounded-circle shadow" 
+                 style="width: 120px; height: 120px; object-fit: cover; border: 4px solid #198754;">
           </div>
-        </div>
-        <div class="col-md-4">
-          <div class="p-4 review-card">
-            <p>"Clean interface and simple to use."</p>
-            <footer class="blockquote-footer">Rohit, SYIT</footer>
-          </div>
-        </div>
-        <div class="col-md-4">
-          <div class="p-4 review-card">
-            <p>"Loved the verified faculty answers."</p>
-            <footer class="blockquote-footer">Priya, FYBSc</footer>
-          </div>
+          <h5 class="fw-bold mb-1">{{ member.name }}</h5>
+          <p class="fw-semibold text-muted">{{ member.role }}</p>
         </div>
       </div>
+      {% endfor %}
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- Development Team Section -->
-  <section id="team" class="py-5 zigzag-down">
-    <div class="container">
-      <h2 class="section-title text-center mb-5">Our Development Team</h2>
-      <div class="row text-center">
-        <div class="col-md-3">
-          <img src="/static/img/dev1.jpg" class="team-img mb-2">
-          <h5>Pravin Patil</h5>
-          <p>Backend Developer</p>
-        </div>
-        <div class="col-md-3">
-          <img src="/static/img/dev2.jpg" class="team-img mb-2">
-          <h5>Rohit Shinde</h5>
-          <p>Frontend Developer</p>
-        </div>
-        <div class="col-md-3">
-          <img src="/static/img/dev3.jpg" class="team-img mb-2">
-          <h5>Priya Pawar</h5>
-          <p>UI Designer</p>
-        </div>
-        <div class="col-md-3">
-          <img src="/static/img/dev4.jpg" class="team-img mb-2">
-          <h5>Swapnil Khairnar</h5>
-          <p>Testing & Docs</p>
-        </div>
-      </div>
-    </div>
-  </section>
 
-  <!-- Coordinator Section -->
-  <section id="coordinator" class="py-5">
-    <div class="container text-center">
-      <h2 class="section-title mb-5">Project Coordinator</h2>
-      <img src="/static/img/coordinator.jpg" class="coordinator-img mb-3" alt="Coordinator">
-      <h5>Prof. Mahesh More</h5>
-      <p>Computer Science Department</p>
-    </div>
-  </section>
+
+  <!-- Features -->
+  <div id="features" class="my-5 py-5 bg-white rounded-4 shadow-sm border border-success-subtle">
+  <div class="container">
+    <h4 class="text-center fw-bold text-success mb-5">🚀 Project Features</h4>
+    <ul class="list-group list-group-flush px-md-5">
+      {% for feature in features %}
+      <li class="list-group-item d-flex align-items-center py-3 border-0 border-bottom">
+        <div class="badge bg-success-subtle text-success fw-bold rounded-circle me-3 d-flex justify-content-center align-items-center" style="width: 35px; height: 35px;">
+          {{ forloop.counter }}
+        </div>
+        <span class="fw-semibold text-dark fs-6">{{ feature.name }}</span>
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+</div>
+
 
   <!-- Footer -->
-  <footer class="bg-dark text-white text-center py-3">
-    &copy; 2025 Doubt Discussion Platform | Designed by Team Pravin
+  <footer class="footer">
+    &copy; 2025 Doubt2Solve. All rights reserved.
   </footer>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script>
+    AOS.init();
+  </script>
+
+{% endblock %}

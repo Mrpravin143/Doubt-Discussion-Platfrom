@@ -1,0 +1,342 @@
+{% extends "base.html" %}
+{% block start %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+
+<style>
+  body {
+    background: linear-gradient(to right, #e3f2fd, #ffffff);
+    font-family: 'Segoe UI', sans-serif;
+  }
+  /* navbar */
+
+    .sticky-topbar {
+      position: sticky;
+      top: 0;
+      z-index: 1050;
+      background-color: #0000FF;
+      color: white;
+    }
+
+  .form-label {
+    font-weight: 600;
+    color: #0d6efd;
+  }
+
+  .card, .form-section {
+    border-radius: 14px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+  }
+
+  .timeline {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: 15px;
+    flex-direction: column;
+  }
+
+  .timeline-step {
+    display: flex;
+    align-items: center;
+    margin: 10px 0;
+    position: relative;
+  }
+
+  .timeline-step::before {
+    content: '';
+    height: 30px;
+    width: 2px;
+    background-color: #0d6efd;
+    position: absolute;
+    left: 10px;
+    top: 30px;
+  }
+
+  .timeline-step:last-child::before {
+    display: none;
+  }
+
+  .dot {
+    height: 16px;
+    width: 16px;
+    background-color: #0d6efd;
+    border-radius: 50%;
+    margin-right: 10px;
+  }
+
+  .timeline-label {
+    font-size: 14px;
+    color: #0d6efd;
+  }
+
+  .form-section {
+    background: white;
+    padding: 24px;
+  }
+
+  .form-control, .form-select {
+    border-radius: 8px;
+    border: 1px solid #d0dfe8;
+  }
+
+  .form-control:focus, .form-select:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 0.2rem rgba(13,110,253,.2);
+  }
+
+  .btn-primary {
+    background-color: #0d6efd;
+    border: none;
+    border-radius: 6px;
+  }
+
+  .btn-primary:hover {
+    background-color: #0b5ed7;
+  }
+  /* timeline styling */
+  .status-timeline {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    position: relative;
+    padding: 30px 10px;
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  }
+
+  .status-step {
+    text-align: center;
+    position: relative;
+    z-index: 2;
+  }
+
+  .status-circle {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: 3px solid #ccc;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 22px;
+    margin: 0 auto 8px;
+    transition: 0.3s ease;
+  }
+
+  .status-label {
+    font-weight: bold;
+    text-transform: capitalize;
+  }
+
+  /* Colored circles */
+  .in-progress .status-circle {
+    border-color: #f5a623;
+    color: #f5a623;
+  }
+
+  .refused .status-circle {
+    border-color: #f44336;
+    color: #f44336;
+  }
+
+  .done .status-circle {
+    border-color: #4caf50;
+    color: #4caf50;
+  }
+
+  /* Animated line */
+  .timeline-line {
+    position: absolute;
+    top: 50%;
+    left: 10%;
+    right: 10%;
+    height: 4px;
+    background: linear-gradient(90deg, #f5a623, #f44336, #4caf50);
+    z-index: 1;
+    animation: grow-line 2s ease-in-out forwards;
+    transform-origin: left;
+    transform: scaleX(0);
+    border-radius: 4px;
+  }
+
+  @keyframes grow-line {
+    to {
+      transform: scaleX(1);
+    }
+  }
+</style>
+
+  <nav class="navbar navbar-expand-lg sticky-topbar py-2">
+    <div class="container-fluid px-4">
+      <a class="navbar-brand d-flex align-items-center text-white" href="#">
+        <span class="fw-bold fs-5">Doubt<span class="text-warning">2</span>Solve</span>
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item"><a class="nav-link text-white" href="#hero">Home</a></li>
+          <li class="nav-item"><a class="nav-link text-white" href="#counter">Counter</a></li>
+          <li class="nav-item"><a class="nav-link text-white" href="#team">Team</a></li>
+          <li class="nav-item"><a class="nav-link text-white" href="#coordinator">Coordinators</a></li>
+          <li class="nav-item"><a class="nav-link text-white" href="#features">Features</a></li>
+        </ul>
+        <form class="d-flex position-relative me-3" role="search">
+          <span class="search-icon">
+            <i class="fas fa-search"></i>
+          </span>
+          <input class="form-control search-input" type="search" placeholder="Search..." aria-label="Search">
+        </form>
+        <span>
+        <a class="btn btn-light" data-bs-toggle="" data-bs-target="" href="{% if user.is_authenticated %}{% else %}{% url 'login_user' %}{% endif %}">{% if user.is_authenticated %}{{user.email}}{% else %}Ask Doubts{% endif %}</a>
+
+        <a class="btn btn-light" data-bs-toggle="" data-bs-target="" href="{% if user.is_authenticated %}{% url 'user_logout' %}{% endif %}">{% if user.is_authenticated %}Logout{% else %}🤗{% endif %}</a>
+        </span>
+      </div>
+    </div>
+  </nav>
+
+
+<div class="container py-4">
+  <h4 class="text-center fw-bold mb-4 animate__animated animate__fadeInDown">Ask Your Doubt</h4>
+
+  
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    <strong>
+                        {% if message.tags == 'success' %}✅ Success:
+                        {% elif message.tags == 'error' %}❌ Error:
+                        {% elif message.tags == 'warning' %}⚠️ Warning:
+                        {% elif message.tags == 'info' %}ℹ️ Info:
+                        {% endif %}
+                    </strong>
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+
+  <div class="row justify-content-center align-items-start">
+    <!-- Doubt Form -->
+    <div class="col-md-8 animate__animated animate__fadeInLeft">
+      <div class="form-section shadow-sm">
+        <form method="POST" enctype="multipart/form-data">
+          {% csrf_token %}
+
+          <div class="mb-3">
+            <label class="form-label">Your Doubt <span class="text-danger">*</span></label>
+            <textarea name="doubt" class="form-control" rows="2" placeholder="Type your doubt here..." required></textarea>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Description <small class="text-muted">(optional)</small></label>
+            <textarea name="description" class="form-control" rows="2" placeholder="Additional info (if any)"></textarea>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Select Teacher</label>
+            <select name="teacher" class="form-select" required>
+              <option value="">-- Choose Teacher --</option>
+              {% for teacher in all_Users %}
+              {% if teacher.role == 'Teacher' %}
+              <option value="{{ teacher.first_name }}">{{ teacher.first_name }} {{ teacher.last_name }}, Sir</option>
+              {% endif %}
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Select Subject</label>
+            <select name="subject" class="form-select" required>
+              <option value="">-- Choose Subject --</option>
+              {% for value,lable in subject_select %}
+              <option value="{{ value }}">{{ lable }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Optional Image</label>
+            <input type="file" name="image" class="form-control">
+          </div>
+
+          <div class="text-end">
+            <button type="submit" class="btn btn-primary px-4">Submit</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+<!-- Timeline Status -->
+<div class="status-timeline animate__animated animate__fadeInUp mt-4">
+  <div class="timeline-line"></div>
+
+  <div class="status-step in-progress">
+    <div class="status-circle">
+      <i class="bi bi-clock"></i>
+    </div>
+    <div class="status-label">in progress</div>
+  </div>
+
+ 
+  <div class="status-step done">
+    <div class="status-circle">
+      <i class="bi bi-check"></i>
+    </div>
+    <div class="status-label">done</div>
+  </div>
+</div>
+
+  <!-- Doubt History Table -->
+  <div class="card p-4 mt-5 animate__animated animate__fadeInUp">
+    <h5 class="mb-3 text-primary">My Doubt History</h5>
+    <div class="table-responsive">
+      <table class="table table-bordered table-striped align-middle small">
+        <thead class="table-primary">
+          <tr>
+            <th>Sr.No</th>
+            <th>Doubt</th>
+            <th>Description</th>
+            <th>Teacher</th>
+            <th>Image</th>
+            <th>Status</th>
+            <th>Asked On</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for doubt in doubts %}
+          <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ doubt.decrypted_name  }}</td>
+            <td>{{ doubt.decrypted_description | truncatewords:20 }}</td>
+            <td>{{ doubt.teacher_select }}</td>
+            <td>
+              {% if doubt.doubt_image %}
+              <a href="{{ doubt.doubt_image.url }}" target="_blank">View</a>
+              {% else %} - {% endif %}
+            </td>
+            <td>
+              {% if doubt.status == 'resolved' %}
+              <span class="badge bg-success">Resolved</span>
+              {% else %}
+              <span class="badge bg-warning text-dark">Pending</span>
+              {% endif %}
+            </td>
+            <td>{{ doubt.created_at|date:"d M Y H:i" }}</td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="7" class="text-center">No doubts asked yet.</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+
+{% endblock %}

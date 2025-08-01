@@ -7,19 +7,19 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Doubt2Solve.settings')
 # Setup Django
 django.setup()
 
-from doubt.models import  CustomUser
-
-user = CustomUser.objects.all()
-
-if user.role == "admin":
-    print()
-
-# from django.contrib.auth import get_user_model
-
-# User = get_user_model()
+from doubt.models import *
 
 
-# print(User)
+alldata = AskDoubts.objects.all().delete()
+print(alldata)
+
+
+
+
+
+
+
+
 
 
 

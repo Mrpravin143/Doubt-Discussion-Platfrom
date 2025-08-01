@@ -1,5 +1,9 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
+from doubt.encryption import encrypt_text, decrypt_text
+from django.conf import settings
+
+
 
 class CustomUserManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
@@ -50,3 +54,49 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return f"{self.email} ({self.role})"
+
+
+class Coordinator(models.Model):
+    image = models.ImageField(upload_to='coordinators/',null=True,blank=True)
+    name = models.CharField(max_length=100)
+    role = models.TextField() 
+
+class DevlopmentTeam(models.Model):
+    image = models.ImageField(upload_to='devlopment_team/',null=True,blank=True)
+    name = models.CharField(max_length=100)
+    role = models.TextField()
+
+class Features(models.Model):
+    name = models.TextField()
+
+
+class AskDoubts(models.Model):
+    SUBJECT_CHOICE = (
+        ('python','PYTHON'),
+        ('Cloud Cmputing','CLOUD COMPUTING'),
+        ('Machine Learning','MACHINE LEARNING'),
+        ('C','C'),
+        ('Emplyebility Skill','EMPLOYBILITY SKILL'),
+    )
+
+    user = models.ForeignKey(CustomUser,on_delete=models.CASCADE,blank=True,null=True)
+    doubt_name = models.CharField(max_length=500)
+    doubt_description = models.TextField(null=True,blank=True)
+    teacher_select = models.CharField(max_length=200,choices=SUBJECT_CHOICE, blank=True , null=True)
+    subject_select = models.CharField(max_length=300)
+    doubt_image = models.ImageField(null=True,blank=True,upload_to='doubt_images/')
+    created_at = models.DateTimeField(auto_now_add = True)
+
+
+    def save(self, *args, **kwargs):
+        self.doubt_name = encrypt_text(self.doubt_name)
+        self.doubt_description = encrypt_text(self.doubt_description)
+        super().save(*args, **kwargs)
+
+    def get_decrypted_name(self):
+        return decrypt_text(self.doubt_name)
+
+    def get_decrypted_description(self):
+        return decrypt_text(self.doubt_description)
+
+    
