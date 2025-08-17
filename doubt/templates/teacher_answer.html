@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block start %}
+<div class="container py-4">
+  <div class="card shadow border-0 rounded-4">
+    <div class="card-body">
+      <h4 class="mb-3 text-primary">Answer for: {{ doubt.get_decrypted_name }}</h4>
+      <p class="text-muted">{{ doubt.get_decrypted_description }}</p>
+
+      <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="mb-3">
+          <label class="form-label fw-bold">Your Answer</label>
+          <textarea class="form-control rounded-3" name="answer_text" rows="4" required></textarea>
+        </div>
+        <div class="mb-3">
+          <label class="form-label fw-bold">Attach File (Optional)</label>
+          <input type="file" class="form-control" name="answer_file">
+        </div>
+        <button type="submit" class="btn btn-primary px-4 rounded-3">
+          <i class="fa fa-paper-plane"></i> Submit Answer
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

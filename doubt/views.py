@@ -1,7 +1,11 @@
-from django.shortcuts import render,redirect
+from django.shortcuts import render,redirect,get_object_or_404
 from doubt.models import *
 from django.contrib import messages
 from django.contrib.auth import authenticate,login,logout
+from django.contrib.auth.decorators import login_required
+from django.db.models import Q
+from django.http import HttpResponseForbidden
+
 
 
 
@@ -95,10 +99,10 @@ def login_user(request):
                 
 
                 elif user.role == "Student":
-                    return redirect("/Student_home/")
+                    return redirect("/")
 
                 elif user.role == "Teacher":
-                    return redirect("/Student_home/")
+                    return redirect("/teacher/doubts/")
 
                 else:
                     messages.error(request, "Unknown user role.")
@@ -114,6 +118,7 @@ def login_user(request):
     return render(request, 'login.html')
 
 
+@login_required
 def user_logout(request):
     logout(request)
     messages.success(request, "LogOut Success. Thank You!")
@@ -121,31 +126,35 @@ def user_logout(request):
 
 
     
-
-
+# @login_required
 def student_dashboard(request): 
-    suport = Coordinator.objects.all()  
+    suport = Coordinator.objects.all() 
+    logo = Logo.objects.all() 
     team = DevlopmentTeam.objects.all() 
     features = Features.objects.all()
+
+    # recent doubts order by doubt_name (descending)
     recent_doubts = AskDoubts.objects.all().order_by('-doubt_name')
 
+    # decrypting each doubt field
     for doubt in recent_doubts:
         doubt.decrypted_name = doubt.get_decrypted_name()
         doubt.decrypted_description = doubt.get_decrypted_description()
-    
 
-    context={
-        'coordinators':suport,
+   
+
+    context = {
+        'coordinators': suport,
         'team': team,
-        'features':features,
+        'features': features,
         'doubts': recent_doubts,
+        'logo': logo,
     }
 
-
-    return render(request,"student_dashboard.html",context)
-
+    return render(request, "student_dashboard.html", context)
 
 
+@login_required
 def ask_doubts(request):
     if request.method == "POST":
         doubt_name = request.POST.get('doubt')
@@ -193,3 +202,80 @@ def ask_doubts(request):
     return render(request,'ask_doubt.html',context)
 
 
+
+
+def profile_view(request):
+    user = request.user  
+
+    # Always get or create profile safely
+    profile, created = UserProfile.objects.get_or_create(user=user)
+
+    if request.method == 'POST':
+        first_name = request.POST.get('first_name')
+        last_name = request.POST.get('last_name')
+        email = request.POST.get('email')
+        interest = request.POST.get('interest')
+        future_goals = request.POST.get('future_goals')
+        about_me = request.POST.get('about_me')
+        skills = request.POST.get('skills')
+
+        # Update User model
+        user.first_name = first_name
+        user.last_name = last_name
+        user.email = email
+        user.save()
+
+        # Update Profile model
+        profile.intrest = interest  # Check spelling: should it be `interest`?
+        profile.future_goals = future_goals
+        profile.about_me = about_me
+        profile.Skills = skills
+        profile.save()
+
+        return redirect('/Profile/') 
+
+    return render(request, 'user_profile.html', {'user': user, 'profile': profile})
+
+
+
+# teacher side ------------>
+
+@login_required
+def teacher_doubts(request):
+    if request.user.role != "Teacher":
+        return HttpResponseForbidden("You are not authorized")
+
+    doubts = AskDoubts.objects.filter(teacher_select=request.user.first_name)  # Or subject mapping
+    return render(request, "teacher_doubt.html", {"doubts": doubts})
+
+
+
+@login_required
+def answer_doubt(request, doubt_id):
+    if request.user.role != "Teacher":
+        return HttpResponseForbidden("Not allowed")
+
+    doubt = get_object_or_404(AskDoubts, id=doubt_id)
+
+    if request.method == "POST":
+        answer_text = request.POST.get("answer_text")
+        answer_file = request.FILES.get("answer_file")
+
+        DoubtAnswer.objects.create(
+            doubt=doubt,
+            teacher=request.user,
+            answer_text=answer_text,
+            answer_file=answer_file
+        )
+        return redirect("teacher_doubts")
+
+    return render(request, "teacher_answer.html", {"doubt": doubt})
+
+
+@login_required
+def my_doubts(request):
+    if request.user.role != "Student":
+        return HttpResponseForbidden("You are not authorized")
+
+    doubts = AskDoubts.objects.filter(user=request.user).prefetch_related("answers")
+    return render(request, "student_answer_dash.html", {"doubts": doubts})

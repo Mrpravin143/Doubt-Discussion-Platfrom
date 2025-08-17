@@ -59,7 +59,8 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 class Coordinator(models.Model):
     image = models.ImageField(upload_to='coordinators/',null=True,blank=True)
     name = models.CharField(max_length=100)
-    role = models.TextField() 
+    role = models.TextField()
+  
 
 class DevlopmentTeam(models.Model):
     image = models.ImageField(upload_to='devlopment_team/',null=True,blank=True)
@@ -68,6 +69,9 @@ class DevlopmentTeam(models.Model):
 
 class Features(models.Model):
     name = models.TextField()
+
+class Logo(models.Model):
+    logo = models.ImageField(upload_to='main_logo/', null=True,blank=True) 
 
 
 class AskDoubts(models.Model):
@@ -98,5 +102,30 @@ class AskDoubts(models.Model):
 
     def get_decrypted_description(self):
         return decrypt_text(self.doubt_description)
+
+
+class UserProfile(models.Model):
+    user = models.OneToOneField(CustomUser,on_delete=models.CASCADE)
+    intrest = models.CharField(max_length=500,blank=True,null=True)
+    future_goals = models.CharField(max_length=300,blank=True,null=True)
+    about_me = models.TextField(max_length=600,blank=True,null=True)
+    Skills = models.CharField(max_length=300,blank=True,null=True)
+
+
+# teacher answer sending....
+
+class DoubtAnswer(models.Model):
+    doubt = models.ForeignKey(AskDoubts, on_delete=models.CASCADE, related_name="answers")
+    teacher = models.ForeignKey(CustomUser, on_delete=models.CASCADE, limit_choices_to={'role': 'teacher'})
+    answer_text = models.TextField(blank=True, null=True)
+    answer_file = models.FileField(upload_to="answer_files/", blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Answer by {self.teacher.email} for {self.doubt.get_decrypted_name()}"
+
+
+
+
 
     

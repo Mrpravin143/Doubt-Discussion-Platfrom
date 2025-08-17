@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block start %}
+<div class="container py-4">
+  <h2 class="text-center mb-4">Assigned Doubts</h2>
+  <div class="row">
+    {% for d in doubts %}
+      <div class="col-md-6 mb-4">
+        <div class="card shadow-lg border-0 rounded-4">
+          <div class="card-body">
+            <h5 class="card-title text-primary">{{ d.get_decrypted_name }}</h5>
+            <p class="card-text text-muted">{{ d.get_decrypted_description }}</p>
+            {% if d.doubt_image %}
+              <img src="{{ d.doubt_image.url }}" class="img-fluid rounded mb-2"/>
+            {% endif %}
+            <a href="{% url 'answer_doubt' d.id %}" class="btn btn-success btn-sm">
+              <i class="fa fa-reply"></i> Answer
+            </a>
+          </div>
+        </div>
+      </div>
+    {% empty %}
+      <p class="text-center">No doubts assigned yet.</p>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

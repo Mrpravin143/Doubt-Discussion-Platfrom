@@ -10,10 +10,12 @@ django.setup()
 from doubt.models import *
 
 
-alldata = AskDoubts.objects.all().delete()
-print(alldata)
 
 
+users = CustomUser.objects.all()
+
+for i in users:
+    print(i.role)
 
 
 
