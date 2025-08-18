@@ -119,10 +119,11 @@ class DoubtAnswer(models.Model):
     teacher = models.ForeignKey(CustomUser, on_delete=models.CASCADE, limit_choices_to={'role': 'teacher'})
     answer_text = models.TextField(blank=True, null=True)
     answer_file = models.FileField(upload_to="answer_files/", blank=True, null=True)
+    status = models.BooleanField(default=True ,blank=True,null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"Answer by {self.teacher.email} for {self.doubt.get_decrypted_name()}"
+        return f"Answer by {self.teacher.email} for {self.doubt.get_decrypted_name()} {self.status}"
 
 
 

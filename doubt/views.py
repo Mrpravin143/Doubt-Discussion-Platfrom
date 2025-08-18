@@ -136,6 +136,10 @@ def student_dashboard(request):
     # recent doubts order by doubt_name (descending)
     recent_doubts = AskDoubts.objects.all().order_by('-doubt_name')
 
+    students_count = CustomUser.objects.filter(role='Student').count()
+    teachers_count = CustomUser.objects.filter(role='Teacher').count()
+    resolved_doubts_count = DoubtAnswer.objects.filter(status=True).count()
+    
     # decrypting each doubt field
     for doubt in recent_doubts:
         doubt.decrypted_name = doubt.get_decrypted_name()
@@ -149,6 +153,9 @@ def student_dashboard(request):
         'features': features,
         'doubts': recent_doubts,
         'logo': logo,
+        'students_count':students_count,
+        'teachers_count':teachers_count,
+        'resolved_doubts_count':resolved_doubts_count,
     }
 
     return render(request, "student_dashboard.html", context)
@@ -183,9 +190,11 @@ def ask_doubts(request):
     
     all_users = CustomUser.objects.all()
 
+    status_Updation = DoubtAnswer.objects.all().order_by('-created_at')
+
     subject_select = AskDoubts.SUBJECT_CHOICE
 
-    user_doubts = AskDoubts.objects.filter(user=request.user).order_by('-created_at')
+    user_doubts = AskDoubts.objects.filter(user=request.user).order_by('created_at')
 
 
     for doubt in user_doubts:
@@ -197,6 +206,7 @@ def ask_doubts(request):
         'subject_select':subject_select,
         'all_Users':all_users,
         'doubts':user_doubts,
+        'status_Updation':status_Updation,
     }    
     
     return render(request,'ask_doubt.html',context)

@@ -1,26 +1,92 @@
 {% extends "base.html" %}
 {% block start %}
-<div class="container py-4">
-  <div class="card shadow border-0 rounded-4">
-    <div class="card-body">
-      <h4 class="mb-3 text-primary">Answer for: {{ doubt.get_decrypted_name }}</h4>
-      <p class="text-muted">{{ doubt.get_decrypted_description }}</p>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
 
-      <form method="POST" enctype="multipart/form-data">
-        {% csrf_token %}
-        <div class="mb-3">
-          <label class="form-label fw-bold">Your Answer</label>
-          <textarea class="form-control rounded-3" name="answer_text" rows="4" required></textarea>
-        </div>
-        <div class="mb-3">
-          <label class="form-label fw-bold">Attach File (Optional)</label>
-          <input type="file" class="form-control" name="answer_file">
-        </div>
-        <button type="submit" class="btn btn-primary px-4 rounded-3">
-          <i class="fa fa-paper-plane"></i> Submit Answer
-        </button>
-      </form>
+<style>
+  body {
+    background: linear-gradient(135deg, #dbeafe, #e0f2fe, #f0f9ff);
+    min-height: 100vh;
+    font-family: 'Poppins', sans-serif;
+  }
+
+  .answer-card {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(12px);
+    border-radius: 20px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .answer-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.18);
+  }
+
+  .form-control {
+    border-radius: 12px;
+    border: 1px solid #d1d5db;
+    padding: 12px;
+    transition: all 0.2s ease;
+  }
+
+  .form-control:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 8px rgba(37, 99, 235, 0.25);
+  }
+
+  label.form-label {
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 6px;
+  }
+
+  .btn-submit {
+    background: linear-gradient(90deg, #2563eb, #3b82f6);
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    padding: 10px 20px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+  }
+
+  .btn-submit:hover {
+    background: linear-gradient(90deg, #1e40af, #2563eb);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+  }
+
+  .doubt-header {
+    border-left: 5px solid #2563eb;
+    padding-left: 12px;
+    margin-bottom: 20px;
+  }
+</style>
+
+<div class="container py-5">
+  <div class="answer-card p-4 mx-auto" style="max-width: 700px;">
+    <div class="doubt-header">
+      <h4 class="text-primary fw-bold">Answer for: {{ doubt.get_decrypted_name }}</h4>
+      <p class="text-muted">{{ doubt.get_decrypted_description }}</p>
     </div>
+
+    <form method="POST" enctype="multipart/form-data">
+      {% csrf_token %}
+      <div class="mb-3">
+        <label class="form-label">✏️ Your Answer</label>
+        <textarea class="form-control" name="answer_text" rows="4" placeholder="Write your detailed answer..." required></textarea>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">📂 Attach File (Optional)</label>
+        <input type="file" class="form-control" name="answer_file">
+      </div>
+
+      <button type="submit" class="btn btn-submit w-100">
+        <i class="fa fa-paper-plane me-2"></i> Submit Answer
+      </button>
+    </form>
   </div>
 </div>
 {% endblock %}

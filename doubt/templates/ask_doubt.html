@@ -10,6 +10,24 @@
     color: #333;
   }
 
+  /* Navbar */
+  .navbar {
+    background: #ffffff;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+  }
+  .navbar-brand {
+    color: #004e92 !important;
+    font-weight: 700;
+  }
+  .nav-link {
+    font-weight: 600;
+    color: #004e92 !important;
+  }
+  .nav-link:hover { 
+    color: #ff6f61 !important;
+  }
+
+
   /* Gradient Title */
   h4.gradient-title, h5.gradient-title {
     background: linear-gradient(90deg, #2563eb, #7c3aed);
@@ -92,6 +110,7 @@
   }
 </style>
 
+
 <div class="container py-4">
   <h4 class="text-center fw-bold mb-4 gradient-title animate__animated animate__fadeInDown">
     <i class="bi bi-patch-question-fill"></i> Ask Your Doubt
@@ -110,6 +129,8 @@
           </div>
       {% endfor %}
   {% endif %}
+
+ 
 
   <div class="row justify-content-center align-items-start">
     <!-- Doubt Form -->
@@ -192,13 +213,26 @@
               <a href="{{ doubt.doubt_image.url }}" target="_blank" class="text-primary fw-bold">View</a>
               {% else %} - {% endif %}
             </td>
-            <td>
-              {% if doubt.status == 'resolved' %}
-              <span class="badge bg-success"><i class="bi bi-check-circle-fill"></i> Resolved</span>
+              <td>
+              {% if doubt.answers.exists %}
+                  {% with latest_answer=doubt.answers.last %}
+                      {% if latest_answer.status %}
+                        <span class="badge bg-success">
+                          <i class="bi bi-check-circle-fill"></i> Resolved
+                        </span>
+                      {% else %}
+                        <span class="badge bg-warning text-dark">
+                          <i class="bi bi-hourglass-split"></i> Pending
+                        </span>
+                      {% endif %}
+                {% endwith %}
               {% else %}
-              <span class="badge bg-warning text-dark"><i class="bi bi-hourglass-split"></i> Pending</span>
+                  <span class="badge bg-warning text-dark">
+                    <i class="bi bi-hourglass-split"></i> Pending
+                  </span>
               {% endif %}
             </td>
+
             <td>{{ doubt.created_at|date:"d M Y H:i" }}</td>
           </tr>
           {% empty %}
@@ -211,4 +245,5 @@
     </div>
   </div>
 </div>
+
 {% endblock %}

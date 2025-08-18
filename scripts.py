@@ -11,11 +11,19 @@ from doubt.models import *
 
 
 
+status_Updation = DoubtAnswer.objects.all().order_by('created_at')
 
-users = CustomUser.objects.all()
+# for i in status_Updation:
+#     if i.status == True:
+#         print("Resolved...✅")
+#     else:
+#         print("Pending...🔴")
 
-for i in users:
-    print(i.role)
+students_count = CustomUser.objects.filter(role='Student').count()
+
+print(students_count)
+
+
 
 
 

@@ -1,0 +1,93 @@
+<style>
+     /* Navbar */
+  .navbar {
+    background: #ffffff;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+  }
+  .navbar-brand {
+    color: #004e92 !important;
+    font-weight: 700;
+  }
+  .nav-link {
+    font-weight: 600;
+    color: #004e92 !important;
+  }
+  .nav-link:hover { 
+    color: #ff6f61 !important;
+  }
+
+</style>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg sticky-top py-2" data-aos="fade-down">
+  <div class="container-fluid px-4">
+    <!-- Brand -->
+    <a class="navbar-brand text-white fw-bold" href="#">
+      <i class="fas fa-graduation-cap me-2"></i>Doubt<span class="text-warning">2</span>Solve
+    </a>
+
+    <!-- Toggler -->
+    <button class="navbar-toggler bg-white" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <!-- Nav Items -->
+    <div class="collapse navbar-collapse" id="navbarContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <!-- Home -->
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'student_dashboard' %}">
+            <i class="fas fa-home me-1"></i> Home
+          </a>
+        </li>
+
+        <!-- Ask Doubts -->
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'ask_doubts' %}">
+            <i class="fas fa-question-circle me-1"></i> Ask Doubts
+          </a>
+        </li>
+
+        <!-- Profile -->
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'profile_view' %}">
+            <i class="fas fa-user me-1"></i> Profile
+          </a>
+        </li>
+
+        <!-- Features Toggle -->
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+            <i class="fas fa-star me-1"></i> Features
+          </a>
+          <ul class="dropdown-menu">
+            {% for feature in features %}
+            <li><a class="dropdown-item" href="#features"><i class="fas fa-check-circle me-2 text-success"></i>{{ feature.name }}</a></li>
+            {% endfor %}
+          </ul>
+        </li>
+      </ul>
+
+      <!-- Right Side -->
+      {% if user.is_authenticated %}
+        <!-- Avatar Dropdown -->
+        <div class="dropdown">
+          <a class="avatar-circle" href="#" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+            {% with user.first_name|default:'' as fname %}
+              {% with user.last_name|default:'' as lname %}
+                {{ fname|slice:":1" }}{{ lname|slice:":1" }}
+              {% endwith %}
+            {% endwith %}
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+            <li><a class="dropdown-item" href="{% url 'profile_view' %}"><i class="fas fa-user-circle me-2"></i> Profile</a></li>
+            <li><a class="dropdown-item" href="{% url 'user_logout' %}"><i class="fas fa-sign-out-alt me-2"></i> Logout</a></li>
+          </ul>
+        </div>
+      {% else %}
+        <a class="btn btn-light me-2" href="{% url 'login_user' %}"><i class="fas fa-sign-in-alt me-1"></i> Login</a>
+        <a class="btn btn-warning" href="{% url 'login_user' %}"><i class="fas fa-plus-circle me-1"></i> Ask Doubts</a>
+      {% endif %}
+    </div>
+  </div>
+</nav>
