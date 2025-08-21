@@ -42,7 +42,6 @@ Doubt2Solve is a user-friendly web application where students can post their aca
 2. **Post a Doubt** by describing your question clearly.
 3. **Browse Doubts** posted by others and help by answering.
 4. **Search** before posting to find similar questions.
-5. **Interact** by commenting and upvoting helpful answers.
 
 ---
 
