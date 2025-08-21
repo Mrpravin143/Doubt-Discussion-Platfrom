@@ -49,10 +49,10 @@ Doubt2Solve is a user-friendly web application where students can post their aca
 
 | Layer     | Technology                           |
 | --------- | ---------------------------------- |
-| Frontend  | HTML, CSS, JavaScript (React or plain JS) |
-| Backend   | Node.js / Python Flask / Django (choose one) |
-| Database  | MongoDB / MySQL / Firebase (depending on your setup) |
-| Hosting   | GitHub Pages / Heroku / Other hosting platforms |
+| Frontend  | HTML, CSS, JavaScript (plain JS) |
+| Backend   | Python ,Django (choose one) |
+| Database  | MySQL / Firebase (depending on your setup) |
+| Hosting   | GitHub Pages / Render / Other hosting platforms |
 
 ---
 
